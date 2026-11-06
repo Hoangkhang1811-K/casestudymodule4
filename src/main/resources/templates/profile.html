@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tài khoản — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap narrow-page">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">GÓC NHỎ CỦA BẠN</span>
+          <h1>Tài khoản <em>của tôi.</em></h1>
+        </div>
+        <a class="text-link" th:href="@{/orders}">Lịch sử đơn hàng ↗</a>
+      </div>
+      <section class="profile-card">
+        <div class="profile-avatar" th:text="${#strings.substring(account.fullName,0,1)}">A</div>
+        <div class="profile-welcome">
+          <h3 th:text="|Xin chào, ${account.fullName}!|">Xin chào!</h3>
+          <span
+            >Thành viên Mộc Nhiên
+            <span class="member-pill" th:text="${account.role}">USER</span></span
+          >
+        </div>
+      </section>
+      <section class="profile-form-card">
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <h3>Thông tin cá nhân</h3>
+        <form class="form-stack" th:action="@{/profile}" method="post">
+          <label>Tên đăng nhập<input th:value="${account.username}" disabled /></label
+          ><label>Họ và tên<input name="fullName" required th:value="${account.fullName}" /></label
+          ><label
+            >Địa chỉ email<input
+              name="email"
+              type="email"
+              required
+              th:value="${account.email}" /></label
+          ><button class="button button-dark">Lưu thay đổi <span>↗</span></button>
+        </form>
+      </section>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

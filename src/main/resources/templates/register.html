@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tạo tài khoản — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="auth-page">
+      <section class="auth-visual">
+        <img
+          src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85"
+          alt="Không gian nhà thân thuộc"
+        />
+        <div>
+          <span class="eyebrow">A HOME OF YOUR OWN</span>
+          <h2>Những điều đẹp<br />bắt đầu từ <em>nhà.</em></h2>
+        </div>
+      </section>
+      <section class="auth-card">
+        <span class="eyebrow">TẠO TÀI KHOẢN MỚI</span>
+        <h1>Chào bạn <em>ghé chơi.</em></h1>
+        <p>Tạo tài khoản để lưu lại những món đồ bạn yêu thích.</p>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <form th:action="@{/register}" method="post" class="form-stack">
+          <label
+            >Họ và tên<input
+              name="fullName"
+              required
+              maxlength="100"
+              placeholder="Tên của bạn" /></label
+          ><label
+            >Tên đăng nhập<input
+              name="username"
+              required
+              minlength="3"
+              maxlength="30"
+              pattern="[a-zA-Z0-9_]+"
+              placeholder="3–30 ký tự, chữ và số" /></label
+          ><label
+            >Email<input type="email" name="email" required placeholder="ban@email.com"
+          /></label>
+          <div class="form-two">
+            <label
+              >Mật khẩu<input
+                type="password"
+                name="password"
+                required
+                minlength="6"
+                placeholder="Ít nhất 6 ký tự" /></label
+            ><label
+              >Nhập lại<input
+                type="password"
+                name="confirmPassword"
+                required
+                minlength="6"
+                placeholder="Xác nhận mật khẩu"
+            /></label>
+          </div>
+          <button class="button button-dark button-wide">Tạo tài khoản <span>↗</span></button>
+        </form>
+        <div class="form-note">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></div>
+      </section>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Giỏ hàng — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+
+    <main class="page-wrap">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">NHỮNG MÓN BẠN ĐÃ CHỌN</span>
+          <h1>Giỏ hàng <em>của bạn.</em></h1>
+        </div>
+        <a class="text-link" th:href="@{/products}">← Tiếp tục mua sắm</a>
+      </div>
+
+      <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+      <div class="cart-layout" th:if="${!#lists.isEmpty(rows)}">
+        <section class="cart-list">
+          <article class="cart-item" th:each="row : ${rows}">
+            <a class="cart-thumb" th:href="@{/products/{id}(id=${row.product.id})}">
+              <img th:src="${row.product.imageUrl}" th:alt="${row.product.name}" />
+            </a>
+
+            <div class="cart-info">
+              <a
+                class="product-name"
+                th:href="@{/products/{id}(id=${row.product.id})}"
+                th:text="${row.product.name}"
+                >Bình gốm</a
+              >
+              <span class="product-category" th:text="${row.product.category.name}">Trang trí</span>
+              <span
+                class="price"
+                th:text="|${#numbers.formatDecimal(row.product.price, 0, 'COMMA', 0, 'POINT')}₫ / món|"
+              >
+                680.000₫ / món
+              </span>
+            </div>
+
+            <form
+              class="quantity-control"
+              th:action="@{/cart/items/{id}/quantity(id=${row.product.id})}"
+              method="post"
+            >
+              <button name="quantity" th:value="${row.quantity - 1}" aria-label="Giảm số lượng">
+                −
+              </button>
+              <span th:text="${row.quantity}">1</span>
+              <button name="quantity" th:value="${row.quantity + 1}" aria-label="Tăng số lượng">
+                +
+              </button>
+            </form>
+
+            <strong
+              class="cart-line-total"
+              th:text="|${#numbers.formatDecimal(row.line, 0, 'COMMA', 0, 'POINT')}₫|"
+            >
+              680.000₫
+            </strong>
+
+            <form th:action="@{/cart/items/{id}/delete(id=${row.product.id})}" method="post">
+              <button
+                class="remove-item"
+                data-confirm="Xóa món đồ này khỏi giỏ hàng?"
+                aria-label="Xóa sản phẩm"
+              >
+                ×
+              </button>
+            </form>
+          </article>
+
+          <div class="cart-footnote">
+            ✳ &nbsp;Sản phẩm được giữ trong giỏ trong phiên làm việc hiện tại.
+          </div>
+        </section>
+
+        <aside class="summary-card">
+          <span class="eyebrow">TÓM TẮT ĐƠN HÀNG</span>
+          <h3>Đơn hàng của bạn</h3>
+
+          <div class="summary-line">
+            <span>Tạm tính</span>
+            <b th:text="|${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}₫|"> 680.000₫ </b>
+          </div>
+
+          <div class="summary-line">
+            <span>Phí vận chuyển</span>
+            <b
+              th:text="${total.compareTo(T(java.math.BigDecimal).valueOf(1000000L)) >= 0
+                        ? 'Miễn phí'
+                        : '35.000₫'}"
+            >
+              Miễn phí
+            </b>
+          </div>
+
+          <div class="summary-line">
+            <span>Thuế VAT</span>
+            <b>Chưa áp dụng (0₫)</b>
+          </div>
+
+          <div class="summary-total">
+            <span>Tổng cộng</span>
+            <strong
+              th:text="|${#numbers.formatDecimal(
+                        total.add(
+                        total.compareTo(T(java.math.BigDecimal).valueOf(1000000L)) >= 0
+                                ? T(java.math.BigDecimal).ZERO
+                                : T(java.math.BigDecimal).valueOf(35000L)
+                        ),
+                        0, 'COMMA', 0, 'POINT'
+                    )}₫|"
+            >
+              680.000₫
+            </strong>
+          </div>
+
+          <a class="button button-dark button-wide" th:href="@{/checkout}">
+            Tiến hành đặt hàng <span>↗</span>
+          </a>
+          <p class="secure-note">♧ &nbsp;Thanh toán khi nhận hàng. An tâm mua sắm.</p>
+        </aside>
+      </div>
+
+      <section class="empty-state empty-cart" th:if="${#lists.isEmpty(rows)}">
+        <span>♧</span>
+        <h3>Chiếc giỏ vẫn đang chờ bạn</h3>
+        <p>Có rất nhiều món đồ thủ công xinh xắn đang chờ được về nhà.</p>
+        <a class="button button-dark" th:href="@{/products}"> Khám phá sản phẩm <span>↗</span> </a>
+      </section>
+    </main>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

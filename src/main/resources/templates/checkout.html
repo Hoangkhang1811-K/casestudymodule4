@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đặt hàng — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments :: header}"></div>
+
+    <main class="page-wrap">
+        <div class="page-heading">
+            <div>
+                <span class="eyebrow">GẦN ĐẾN LÚC ĐÓN MÓN ĐỒ VỀ NHÀ</span>
+                <h1>Thông tin <em>giao hàng.</em></h1>
+            </div>
+            <a class="text-link" th:href="@{/cart}">← Quay lại giỏ hàng</a>
+        </div>
+
+        <div class="alert alert-error"
+             th:if="${error}"
+             th:text="${error}"></div>
+
+        <div class="cart-layout checkout-layout">
+            <form class="checkout-form" th:action="@{/checkout}" method="post">
+                <h3>Người nhận hàng</h3>
+                <p>Cho chúng mình biết giao món đồ đến đâu nhé.</p>
+
+                <div class="form-stack">
+                    <label>
+                        Họ và tên
+                        <input name="fullName"
+                               required
+                               th:value="${account.fullName}"
+                               placeholder="Họ tên người nhận">
+                    </label>
+
+                    <label>
+                        Số điện thoại
+                        <input name="phone"
+                               required
+                               pattern="[0-9+() -]{9,20}"
+                               placeholder="09xx xxx xxx">
+                    </label>
+
+                    <label>
+                        Địa chỉ nhận hàng
+                        <textarea name="address"
+                                  rows="3"
+                                  required
+                                  placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+                    </label>
+
+                    <div class="payment-method">
+                        <span>♧</span>
+                        <div>
+                            <b>Thanh toán khi nhận hàng (COD)</b>
+                            <small>Thanh toán trực tiếp cho nhân viên giao hàng</small>
+                        </div>
+                        <span class="radio-dot"></span>
+                    </div>
+
+                    <button class="button button-dark button-wide">
+                        Xác nhận đặt hàng <span>↗</span>
+                    </button>
+                </div>
+            </form>
+
+            <aside class="summary-card">
+                <span class="eyebrow">ĐƠN HÀNG CỦA BẠN</span>
+                <h3>Đang chờ về nhà</h3>
+
+                <div class="checkout-products">
+                    <div th:each="row : ${rows}">
+                        <img th:src="${row.product.imageUrl}"
+                             th:alt="${row.product.name}">
+                        <span th:text="${row.product.name}">Bình gốm</span>
+                        <small th:text="|× ${row.quantity}|">× 1</small>
+                        <b th:text="|${#numbers.formatDecimal(row.line, 0, 'COMMA', 0, 'POINT')}₫|">
+                            680.000₫
+                        </b>
+                    </div>
+                </div>
+
+                <div class="summary-line">
+                    <span>Tạm tính</span>
+                    <b th:text="|${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}₫|">
+                        680.000₫
+                    </b>
+                </div>
+
+                <div class="summary-line">
+                    <span>Phí vận chuyển</span>
+                    <b th:text="${total.compareTo(T(java.math.BigDecimal).valueOf(1000000L)) >= 0 ? 'Miễn phí' : '35.000₫'}">
+                        Miễn phí
+                    </b>
+                </div>
+
+                <div class="summary-line">
+                    <span>Thuế VAT</span>
+                    <b>Chưa áp dụng (0₫)</b>
+                </div>
+
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <strong
+                        th:text="|${#numbers.formatDecimal(
+                            total.add(
+                                total.compareTo(T(java.math.BigDecimal).valueOf(1000000L)) >= 0
+                                    ? T(java.math.BigDecimal).ZERO
+                                    : T(java.math.BigDecimal).valueOf(35000L)
+                            ),
+                            0, 'COMMA', 0, 'POINT'
+                        )}₫|">
+                        680.000₫
+                    </strong>
+                </div>
+
+                <p class="secure-note">
+                    ✳ &nbsp;Chúng mình sẽ xác nhận đơn hàng trước khi gửi đi.
+                </p>
+            </aside>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

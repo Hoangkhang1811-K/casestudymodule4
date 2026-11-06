@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quản lý đơn hàng — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">KHÔNG GIAN QUẢN TRỊ</span>
+          <h1>Đơn hàng <em>cửa hàng.</em></h1>
+        </div>
+      </div>
+      <nav class="admin-tabs">
+        <a th:href="@{/admin/products}">Sản phẩm</a><a th:href="@{/admin/categories}">Danh mục</a
+        ><a th:href="@{/admin/users}">Người dùng</a
+        ><a class="active" th:href="@{/admin/orders}">Đơn hàng</a>
+        <a th:href="@{/admin/reports}">Báo cáo</a>
+      </nav>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Khách hàng</th>
+              <th>Thời gian</th>
+              <th>Tổng cộng</th>
+              <th>Trạng thái</th>
+              <th>Cập nhật</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="order : ${orders}">
+              <td><b th:text="${order.orderCode}">MLY-1</b></td>
+              <td>
+                <b th:text="${order.customerName}">Khách hàng</b
+                ><small class="table-sub" th:text="${order.phone}">090</small>
+              </td>
+              <td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}">01/01</td>
+              <td
+                class="price"
+                th:text="|${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')}₫|"
+              >
+                680.000₫
+              </td>
+              <td><span class="status-pill" th:text="${order.status}">Đang xử lý</span></td>
+              <td>
+                <form
+                  class="inline-form"
+                  th:action="@{/admin/orders/{id}/status(id=${order.id})}"
+                  method="post"
+                >
+                  <select name="status">
+                    <option>Đang xử lý</option>
+                    <option>Đang giao</option>
+                    <option>Hoàn tất</option>
+                    <option>Đã hủy</option></select
+                  ><button class="text-link">Lưu</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty-note" th:if="${#lists.isEmpty(orders)}">Chưa có đơn hàng nào.</div>
+      </div>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

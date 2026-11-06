@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="|${product.name} — Mộc Nhiên|">Sản phẩm — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap">
+      <div class="breadcrumbs">
+        <a th:href="@{/}">Trang chủ</a><span>/</span
+        ><span th:text="${product.category.name}">Trang trí</span><span>/</span
+        ><span th:text="${product.name}">Tên sản phẩm</span>
+      </div>
+      <section class="detail-layout">
+        <div class="detail-photo" th:style="|background-color:${product.color}|">
+          <img th:src="${product.imageUrl}" th:alt="${product.name}" />
+        </div>
+        <div class="detail-copy">
+          <span class="eyebrow" th:text="${product.category.name}">TRANG TRÍ</span>
+          <h1 th:text="${product.name}">Bình gốm Mộc An</h1>
+          <div class="detail-rating">★★★★★ <span>Được làm thủ công tại Việt Nam</span></div>
+          <strong
+            class="detail-price"
+            th:text="|${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')}₫|"
+            >680.000₫</strong
+          >
+          <p class="detail-description" th:text="${product.description}">Mô tả sản phẩm.</p>
+          <div class="detail-stock">
+            <span th:classappend="${product.stock > 0 ? 'stock-dot' : 'stock-dot out'}"></span
+            ><span th:text="${product.stock > 0 ? 'Còn hàng' : 'Tạm hết hàng'}">Còn hàng</span
+            ><small th:text="|${product.stock} sản phẩm trong kho|">18 sản phẩm trong kho</small>
+          </div>
+          <form class="detail-buy" th:action="@{/cart/items}" method="post">
+            <input type="hidden" name="productId" th:value="${product.id}" /><label
+              >Số lượng<input
+                type="number"
+                name="quantity"
+                min="1"
+                th:max="${product.stock}"
+                value="1" /></label
+            ><button class="button button-dark" th:disabled="${product.stock == 0}">
+              Thêm vào giỏ <span>↗</span>
+            </button>
+          </form>
+          <div class="detail-benefits">
+            <span>✳ &nbsp;Sản phẩm thủ công tỉ mỉ</span
+            ><span>♧ &nbsp;Đóng gói thân thiện môi trường</span
+            ><span>↺ &nbsp;Đổi trả dễ dàng trong 7 ngày</span>
+          </div>
+          <div class="detail-description-block">
+            <h3>Một món đồ, nhiều câu chuyện.</h3>
+            <p>
+              Sản phẩm được các nghệ nhân Việt chăm chút từ khâu chọn vật liệu đến hoàn thiện. Một
+              chút khác biệt trong từng sản phẩm khiến món đồ trở thành của riêng bạn.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

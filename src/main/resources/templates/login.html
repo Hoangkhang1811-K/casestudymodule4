@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đăng nhập — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="auth-page">
+      <section class="auth-visual">
+        <img
+          src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85"
+          alt="Góc nhà yên bình"
+        />
+        <div>
+          <span class="eyebrow">WELCOME HOME</span>
+          <h2>Nhà là nơi<br />mình <em>thuộc về.</em></h2>
+        </div>
+      </section>
+      <section class="auth-card">
+        <span class="eyebrow">RẤT VUI ĐƯỢC GẶP LẠI</span>
+        <h1>Chào bạn <em>trở về.</em></h1>
+        <p>Đăng nhập để tiếp tục hành trình làm đẹp cho ngôi nhà của bạn.</p>
+        <div class="alert alert-error" th:if="${param.error}" th:text="${errorMessage}">
+          Thông tin đăng nhập chưa chính xác.
+        </div>
+        <div class="alert alert-success" th:if="${param.logout}">Bạn đã đăng xuất thành công.</div>
+        <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+        <form th:action="@{/login}" method="post" class="form-stack">
+          <label
+            >Tên đăng nhập<input
+              name="username"
+              required
+              autocomplete="username"
+              placeholder="Ví dụ: annguyen" /></label
+          ><label
+            >Mật khẩu<input
+              type="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              placeholder="Nhập mật khẩu" /></label
+          ><button class="button button-dark button-wide" type="submit">
+            Đăng nhập <span>↗</span>
+          </button>
+        </form>
+        <div class="form-note">
+          Chưa có tài khoản? <a th:href="@{/register}">Đăng ký miễn phí</a>
+        </div>
+        <div class="demo-note">
+          <span>✳</span>
+          <div>
+            <b>Tài khoản trải nghiệm quản trị</b
+            ><small>admin &nbsp;·&nbsp; mật khẩu admin123</small>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

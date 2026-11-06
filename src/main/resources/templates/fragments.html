@@ -1,0 +1,82 @@
+<!doctype html>
+<html
+  lang="vi"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <body>
+    <header th:fragment="header" class="site-header">
+      <div class="topline">
+        <span>Miễn phí giao hàng cho đơn từ 1.000.000₫</span
+        ><span>Đồ đẹp cho nhà, bình yên cho mình</span>
+      </div>
+      <nav class="navbar">
+        <a class="brand" th:href="@{/}"
+          ><span class="brand-mark">m</span
+          ><span>mộc<span class="brand-light">nhiên</span><small>HOMESTUDIO</small></span></a
+        >
+        <form class="searchbox" th:action="@{/products}" method="get">
+          <span>⌕</span><input name="keyword" placeholder="Tìm món đồ bạn yêu…" /><button
+            aria-label="Tìm kiếm"
+          >
+            ↵
+          </button>
+        </form>
+        <div class="nav-actions">
+          <a class="nav-link" th:href="@{/orders}" sec:authorize="isAuthenticated()">Đơn hàng</a
+          ><a class="icon-link user-link" th:href="@{/profile}" sec:authorize="isAuthenticated()"
+            ><span>♙</span><span sec:authentication="name">Tài khoản</span></a
+          ><a class="icon-link user-link" th:href="@{/login}" sec:authorize="isAnonymous()"
+            ><span>♙</span><span>Tài khoản</span></a
+          ><a class="icon-link bag-link" th:href="@{/cart}"
+            ><span>♧</span><span>Giỏ hàng</span><b th:text="${cartCount}">0</b></a
+          ><a class="language-link" th:href="@{/(lang='vi')}">VI</a
+          ><a class="language-link" th:href="@{/(lang='en')}">EN</a>
+          <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+            <button class="logout-link">Đăng xuất</button>
+          </form>
+        </div>
+      </nav>
+      <div class="category-nav">
+        <a th:href="@{/}">Tất cả sản phẩm</a
+        ><a
+          th:each="category : ${@storeService.allCategories()}"
+          th:href="@{/products(category=${category.id})}"
+          th:text="${category.name}"
+          >Danh mục</a
+        ><a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Quản trị</a>
+        <a th:href="@{/admin/reports}" sec:authorize="hasRole('ADMIN')">Báo cáo</a>
+      </div>
+    </header>
+    <footer th:fragment="footer" class="site-footer">
+      <div class="footer-main">
+        <div>
+          <a class="brand footer-brand" th:href="@{/}"
+            ><span class="brand-mark">m</span
+            ><span>mộc<span class="brand-light">nhiên</span><small>HOMESTUDIO</small></span></a
+          >
+          <p>Mang nét bình yên, ấm áp vào trong từng góc nhỏ của ngôi nhà bạn.</p>
+        </div>
+        <div>
+          <h4>Khám phá</h4>
+          <a th:href="@{/products}">Tất cả sản phẩm</a><a th:href="@{/cart}">Giỏ hàng</a
+          ><a th:href="@{/orders}">Đơn hàng của tôi</a>
+        </div>
+        <div>
+          <h4>Chăm sóc khách hàng</h4>
+          <a href="#footer">Câu hỏi thường gặp</a><a href="#footer">Chính sách giao hàng</a
+          ><a href="#footer">Đổi trả & bảo hành</a>
+        </div>
+        <div>
+          <h4>Ghé thăm chúng tôi</h4>
+          <p>12 Nguyễn Thị Minh Khai<br />Quận 1, TP. Hồ Chí Minh</p>
+          <p>hello@mocnhien.vn<br />0901 234 567</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Mộc Nhiên Homestudio</span
+        ><span>Được làm bằng sự tỉ mỉ và một chút yêu thương ♡</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đơn hàng — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap narrow-page">
+      <section class="success-card">
+        <span class="success-icon">✓</span><span class="eyebrow">CẢM ƠN BẠN ĐÃ CHỌN MỘC NHIÊN</span>
+        <h1>Món đồ đang trên đường <em>về nhà.</em></h1>
+        <p>Đơn hàng của bạn đã được ghi nhận. Chúng mình sẽ sớm liên hệ để xác nhận nhé.</p>
+        <div class="order-code">
+          <span>MÃ ĐƠN HÀNG</span><b th:text="${order.orderCode}">MLY-2026</b>
+        </div>
+      </section>
+      <section class="order-invoice">
+        <div class="order-invoice-head">
+          <div>
+            <span class="eyebrow">HÓA ĐƠN MUA HÀNG</span>
+            <h2 th:text="${order.orderCode}">MLY-2026</h2>
+          </div>
+          <span class="status-pill" th:text="${order.status}">Đang xử lý</span>
+        </div>
+        <p th:text="|Ngày đặt: ${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}|">
+          Ngày đặt
+        </p>
+        <div class="invoice-items">
+          <div th:each="item : ${order.items}">
+            <span th:text="${item.productNameSnapshot}">Tên món</span
+            ><small
+              th:text="|${item.quantity} × ${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT')}₫|"
+              >1 món</small
+            ><b th:text="|${#numbers.formatDecimal(item.lineTotal,0,'COMMA',0,'POINT')}₫|"
+              >680.000₫</b
+            >
+          </div>
+        </div>
+
+        <div class="invoice-breakdown">
+          <div>
+            <span>Tạm tính</span>
+            <b
+              th:text="|${#numbers.formatDecimal(order.subtotalAmount, 0, 'COMMA', 0, 'POINT')}₫|"
+            >
+              780.000₫
+            </b>
+          </div>
+          <div>
+            <span>Phí vận chuyển</span>
+            <b
+              th:text="${order.shippingFee.compareTo(T(java.math.BigDecimal).ZERO) == 0
+                ? 'Miễn phí'
+                : #numbers.formatDecimal(order.shippingFee, 0, 'COMMA', 0, 'POINT') + '₫'}"
+            >
+              35.000₫
+            </b>
+          </div>
+          <div>
+            <span>Thuế VAT</span>
+            <b
+              th:text="|Chưa áp dụng (${#numbers.formatDecimal(order.taxAmount, 0, 'COMMA', 0, 'POINT')}₫)|"
+            >
+              Chưa áp dụng (0₫)
+            </b>
+          </div>
+        </div>
+
+        <div class="invoice-total">
+          <span>Tổng thanh toán</span
+          ><strong th:text="|${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')}₫|"
+            >680.000₫</strong
+          >
+        </div>
+        <div class="shipping-address">
+          <b>Giao đến</b><span th:text="${order.customerName}">Khách hàng</span
+          ><span th:text="${order.phone}">Điện thoại</span
+          ><span th:text="${order.address}">Địa chỉ</span>
+        </div>
+      </section>
+      <a class="button button-dark center-button" th:href="@{/products}"
+        >Tiếp tục khám phá <span>↗</span></a
+      >
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

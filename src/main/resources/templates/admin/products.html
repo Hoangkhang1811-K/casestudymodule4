@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quản lý sản phẩm — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">KHÔNG GIAN QUẢN TRỊ</span>
+          <h1>Quản lý <em>sản phẩm.</em></h1>
+        </div>
+        <a class="button button-dark" th:href="@{/admin/products/new}">+ Thêm sản phẩm</a>
+      </div>
+      <nav class="admin-tabs">
+        <a class="active" th:href="@{/admin/products}">Sản phẩm</a
+        ><a th:href="@{/admin/categories}">Danh mục</a><a th:href="@{/admin/users}">Người dùng</a
+        ><a th:href="@{/admin/orders}">Đơn hàng</a>
+        <a th:href="@{/admin/reports}">Báo cáo</a>
+      </nav>
+      <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Giá bán</th>
+              <th>Tồn kho</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="product : ${products}">
+              <td>
+                <div class="table-product">
+                  <img th:src="${product.imageUrl}" th:alt="${product.name}" /><b
+                    th:text="${product.name}"
+                    >Bình gốm</b
+                  >
+                </div>
+              </td>
+              <td th:text="${product.category?.name ?: 'Chưa phân loại'}">Trang trí</td>
+              <td
+                class="price"
+                th:text="|${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')}₫|"
+              >
+                680.000₫
+              </td>
+              <td th:text="${product.stock}">18</td>
+              <td>
+                <span class="status-pill" th:text="${product.active ? 'Đang bán' : 'Đã ẩn'}"
+                  >Đang bán</span
+                >
+              </td>
+              <td class="table-actions">
+                <a class="text-link" th:href="@{/admin/products/{id}/edit(id=${product.id})}"
+                  >Sửa</a
+                >
+                <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post">
+                  <button class="danger-link" data-confirm="Ẩn sản phẩm này khỏi cửa hàng?">
+                    Ẩn
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

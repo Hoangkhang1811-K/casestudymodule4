@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Báo cáo bán hàng — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+
+    <main class="page-wrap">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">KHÔNG GIAN QUẢN TRỊ</span>
+          <h1>Báo cáo <em>bán hàng.</em></h1>
+        </div>
+      </div>
+
+      <nav class="admin-tabs">
+        <a th:href="@{/admin/products}">Sản phẩm</a>
+        <a th:href="@{/admin/categories}">Danh mục</a>
+        <a th:href="@{/admin/users}">Người dùng</a>
+        <a th:href="@{/admin/orders}">Đơn hàng</a>
+        <a class="active" th:href="@{/admin/reports}">Báo cáo</a>
+      </nav>
+
+      <form class="report-filter" th:action="@{/admin/reports}" method="get">
+        <label>
+          Xem báo cáo
+          <select name="period" id="report-period">
+            <option value="day" th:selected="${report.period == 'day'}">Theo ngày</option>
+            <option value="month" th:selected="${report.period == 'month'}">Theo tháng</option>
+            <option value="quarter" th:selected="${report.period == 'quarter'}">Theo quý</option>
+            <option value="year" th:selected="${report.period == 'year'}">Theo năm</option>
+          </select>
+        </label>
+
+        <label data-report-period="day" th:hidden="${report.period != 'day'}">
+          Ngày
+          <input type="date" name="day" th:value="${report.selectedDay}" />
+        </label>
+
+        <label data-report-period="month" th:hidden="${report.period != 'month'}">
+          Tháng
+          <input type="month" name="month" th:value="${report.selectedMonth}" />
+        </label>
+
+        <div
+          class="report-quarter-filter"
+          data-report-period="quarter"
+          th:hidden="${report.period != 'quarter'}"
+        >
+          <label>
+            Quý
+            <select name="quarter">
+              <option value="1" th:selected="${report.selectedQuarter == 1}">Quý 1</option>
+              <option value="2" th:selected="${report.selectedQuarter == 2}">Quý 2</option>
+              <option value="3" th:selected="${report.selectedQuarter == 3}">Quý 3</option>
+              <option value="4" th:selected="${report.selectedQuarter == 4}">Quý 4</option>
+            </select>
+          </label>
+          <label>
+            Năm
+            <input type="number" name="year" min="2000" max="2100" th:value="${report.selectedYear}" />
+          </label>
+        </div>
+
+        <label data-report-period="year" th:hidden="${report.period != 'year'}">
+          Năm
+          <input type="number" name="year" min="2000" max="2100" th:value="${report.selectedYear}" />
+        </label>
+
+        <button class="button button-dark" type="submit">Xem báo cáo <span>↗</span></button>
+      </form>
+
+      <p class="report-period-note">
+        <span th:text="${report.periodLabel}">Theo tháng</span>:
+        <span th:text="${#temporals.format(report.startDate, 'dd/MM/yyyy')}">01/11/2026</span>
+        –
+        <span th:text="${#temporals.format(report.endDate, 'dd/MM/yyyy')}">30/11/2026</span>
+      </p>
+
+      <section class="report-kpis">
+        <article>
+          <span>DOANH THU</span>
+          <strong th:text="|${#numbers.formatDecimal(report.revenue, 0, 'COMMA', 0, 'POINT')}₫|">0₫</strong>
+          <small>Tổng hóa đơn, gồm phí giao hàng; đã loại trừ đơn hủy</small>
+        </article>
+        <article>
+          <span>SỐ ĐƠN HÀNG</span>
+          <strong th:text="${report.orderCount}">0</strong>
+          <small>Đơn được ghi nhận trong kỳ</small>
+        </article>
+        <article>
+          <span>GIÁ TRỊ ĐƠN TRUNG BÌNH</span>
+          <strong th:text="|${#numbers.formatDecimal(report.averageOrderValue, 0, 'COMMA', 0, 'POINT')}₫|">0₫</strong>
+          <small>Doanh thu chia cho số đơn</small>
+        </article>
+      </section>
+
+      <section class="report-panel">
+        <div class="report-panel-heading">
+          <div>
+            <span class="eyebrow">DOANH THU THEO KỲ</span>
+            <h2
+              th:text="${report.period == 'day'
+                ? 'Theo giờ trong ngày'
+                : (report.period == 'month' ? 'Theo ngày trong tháng' : 'Chi tiết từng kỳ')}"
+            >
+              Chi tiết doanh thu
+            </h2>
+          </div>
+          <span class="report-order-count" th:text="|${report.orderCount} đơn hàng|">0 đơn hàng</span>
+        </div>
+
+        <div class="report-chart">
+          <div class="report-chart-row" th:each="bucket : ${report.buckets}">
+            <span class="report-chart-label" th:text="${bucket.label}">01/11</span>
+            <div class="report-bar-track">
+              <div class="report-bar" th:style="|width: ${bucket.barWidthPercent}%|"></div>
+            </div>
+            <span class="report-chart-orders" th:text="|${bucket.orderCount} đơn|">0 đơn</span>
+            <strong th:text="|${#numbers.formatDecimal(bucket.revenue, 0, 'COMMA', 0, 'POINT')}₫|">0₫</strong>
+          </div>
+        </div>
+
+        <p class="report-empty" th:if="${report.orderCount == 0}">
+          Chưa có đơn hàng trong khoảng thời gian này.
+        </p>
+      </section>
+    </main>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

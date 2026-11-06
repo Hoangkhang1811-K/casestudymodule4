@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đơn hàng của tôi — Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">NHỮNG MÓN ĐỒ ĐÃ VỀ NHÀ</span>
+          <h1>Đơn hàng <em>của tôi.</em></h1>
+        </div>
+      </div>
+      <section class="admin-table-wrap" th:if="${!#lists.isEmpty(orders)}">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Ngày đặt</th>
+              <th>Số món</th>
+              <th>Tổng cộng</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="order : ${orders}">
+              <td><b th:text="${order.orderCode}">MLY-123</b></td>
+              <td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+              <td th:text="${#lists.size(order.items)}">1</td>
+              <td
+                class="price"
+                th:text="|${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')}₫|"
+              >
+                680.000₫
+              </td>
+              <td><span class="status-pill" th:text="${order.status}">Đang xử lý</span></td>
+              <td><a class="text-link" th:href="@{/orders/{id}(id=${order.id})}">Chi tiết ↗</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="empty-state" th:if="${#lists.isEmpty(orders)}">
+        <span>♡</span>
+        <h3>Hành trình mua sắm bắt đầu từ đây</h3>
+        <p>Những món đồ bạn đặt sẽ được lưu lại ở trang này.</p>
+        <a class="button button-dark" th:href="@{/products}">Ghé thăm cửa hàng ↗</a>
+      </section>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>

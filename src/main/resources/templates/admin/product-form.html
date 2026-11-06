@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sản phẩm — Quản trị Mộc Nhiên</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments :: header}"></div>
+    <main class="page-wrap narrow-page">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">QUẢN LÝ CỬA HÀNG</span>
+          <h1 th:text="${product.id == null ? 'Thêm sản phẩm.' : 'Cập nhật sản phẩm.'}">
+            Thêm sản phẩm.
+          </h1>
+        </div>
+        <a class="text-link" th:href="@{/admin/products}">← Quay lại</a>
+      </div>
+      <form
+        class="profile-form-card form-stack"
+        th:action="@{/admin/products/save}"
+        th:object="${product}"
+        method="post"
+      >
+        <input type="hidden" th:field="*{id}" /><label
+          >Tên sản phẩm<input th:field="*{name}" required maxlength="120" /><small
+            class="field-error"
+            th:errors="*{name}"
+          ></small></label
+        ><label
+          >Mô tả<textarea th:field="*{description}" rows="4" maxlength="1200"></textarea>
+        </label>
+        <div class="form-two">
+          <label
+            >Giá bán (₫)<input
+              th:field="*{price}"
+              type="number"
+              min="0"
+              step="1000"
+              required /><small class="field-error" th:errors="*{price}"></small></label
+          ><label
+            >Số lượng tồn<input th:field="*{stock}" type="number" min="0" required /><small
+              class="field-error"
+              th:errors="*{stock}"
+            ></small
+          ></label>
+        </div>
+        <label
+          >Danh mục<select name="categoryId" required>
+            <option value="">Chọn danh mục</option>
+            <option
+              th:each="category : ${categories}"
+              th:value="${category.id}"
+              th:selected="${product.category != null && product.category.id == category.id}"
+              th:text="${category.name}"
+            ></option></select></label
+        ><label
+          >Đường dẫn hình ảnh<input th:field="*{imageUrl}" type="url" placeholder="https://..."
+        /></label>
+        <div class="form-two">
+          <label>Nhãn sản phẩm<input th:field="*{badge}" placeholder="BÁN CHẠY" /></label
+          ><label>Màu nền ảnh<input th:field="*{color}" type="color" /></label>
+        </div>
+        <label class="checkbox-label"
+          ><input th:field="*{active}" type="checkbox" /> Hiển thị sản phẩm trên cửa hàng</label
+        ><button class="button button-dark">Lưu sản phẩm <span>↗</span></button>
+      </form>
+    </main>
+    <div th:replace="~{fragments :: footer}"></div>
+  </body>
+</html>
